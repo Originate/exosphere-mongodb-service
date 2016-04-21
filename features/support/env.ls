@@ -20,7 +20,7 @@ module.exports = ->
 
   @Before (_scenario, done) ->
     get-db (db) ->
-      db.collection('exosphere-mongo-service-test')?.drop!
+      db.collection('entries')?.drop!
       done!
 
   @After ->
@@ -30,6 +30,6 @@ module.exports = ->
 
   @registerHandler 'AfterFeatures', (_event, done) ->
     get-db (db) ->
-      db.collection('exosphere-mongo-service-test')?.drop!
+      db.collection('entries')?.drop!
       db.close!
       done!

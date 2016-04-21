@@ -34,7 +34,7 @@ module.exports = ->
   @Given /^the service contains the entries:$/, (table, done) ->
     entries = [{[key.to-lower-case!, value] for key, value of record} for record in table.hashes!]
     @exocom
-      ..send-message service: 'entries', name: 'mongo.create-many', payload: entries
+      ..send-message service: 'tweets', name: 'mongo.create-many', payload: entries
       ..wait-until-receive done
 
 
@@ -49,7 +49,7 @@ module.exports = ->
         eval livescript.compile "payload-json = #{filled-payload}", bare: true, header: no
       else                          # payload is a hash
         eval livescript.compile "payload-json = {\n#{filled-payload}\n}", bare: true, header: no
-      @exocom.send-message service: 'entries', name: message, payload: payload-json
+      @exocom.send-message service: 'tweets', name: message, payload: payload-json
       done!
 
 
