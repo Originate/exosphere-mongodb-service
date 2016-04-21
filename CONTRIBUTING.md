@@ -1,4 +1,4 @@
-# Exosphere Tweet Service Developer Guidelines
+# Exosphere Mongo Service Developer Guidelines
 
 ## Install
 

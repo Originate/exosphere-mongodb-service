@@ -1,5 +1,5 @@
-name: Exosphere tweets service
-description: Manages tweets in Exosphere applications
+name: Exosphere Mongo service
+description: Generic MongoDB storage service
 
 setup: npm install
 startup:
@@ -9,15 +9,15 @@ startup:
 
 messages:
   receives:
-    - tweets.create
-    - tweets.list
-    - tweets.get-details
-    - tweets.update
-    - tweets.delete
+    - mongo.create
+    - mongo.list
+    - mongo.get-details
+    - mongo.update
+    - mongo.delete
   sends:
-    - tweets.created
-    - tweets.listed
-    - tweets.details
-    - tweets.not-found
-    - tweets.updated
-    - tweets.deleted
+    - mongo.created
+    - mongo.listed
+    - mongo.details
+    - mongo.not-found
+    - mongo.updated
+    - mongo.deleted

@@ -1,5 +1,5 @@
-# Tweets Service [![Circle CI](https://circleci.com/gh/Originate/exosphere-tweets-service.svg?style=shield&circle-token=b8da91b53c5b269eeb2460e344f521461ffe9895)](https://circleci.com/gh/Originate/exosphere-tweets-service)
-> An Exosphere service for storing tweet data
+# Mongo Service [![Circle CI](https://circleci.com/gh/Originate/exosphere-mongo-service.svg?style=shield&circle-token=b8da91b53c5b269eeb2460e344f521461ffe9895)](https://circleci.com/gh/Originate/exosphere-mongo-service)
+> An Exosphere service for storing entry data
 
 
 ## Installation

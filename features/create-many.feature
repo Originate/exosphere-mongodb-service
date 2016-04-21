@@ -1,15 +1,15 @@
-Feature: Creating multiple tweets
+Feature: Creating multiple entries
 
   As an ExoService application
-  I want to be able to create multiple tweets in one transaction
+  I want to be able to create multiple entries in one transaction
   So that I don't have to send and receive so many messages and remain performant.
 
   Rules:
-  - send the message "tweets.create-many" to create several tweets at once
-  - payload is an array of tweet data
-  - when successful, the service replies with "tweets.created"
+  - send the message "mongo.create-many" to create several entries at once
+  - payload is an array of entry data
+  - when successful, the service replies with "mongo.created"
     and the newly created account
-  - when there is an error, the service replies with "tweets.not-created"
+  - when there is an error, the service replies with "mongo.not-created"
     and a message describing the error
 
 
@@ -18,34 +18,34 @@ Feature: Creating multiple tweets
     And an instance of this service
 
 
-  Scenario: creating valid tweets
-    When sending the message "tweets.create-many" with the payload:
+  Scenario: creating valid entries
+    When sending the message "mongo.create-many" with the payload:
       """
       [
         * content: 'Monday'
         * content: 'Tuesday'
       ]
       """
-    Then the service replies with "tweets.created-many" and the payload:
+    Then the service replies with "mongo.created-many" and the payload:
       """
       count: 2
       """
-    And the service contains the tweets:
+    And the service contains the entries:
       | CONTENT |
       | Monday  |
       | Tuesday |
 
 
-  Scenario: trying to create tweets with empty content
-    When sending the message "tweets.create-many" with the payload:
+  Scenario: trying to create entries with empty content
+    When sending the message "mongo.create-many" with the payload:
       """
       [
         * content: 'Monday'
         * content: ''
       ]
       """
-    Then the service replies with "tweets.not-created" and the payload:
+    Then the service replies with "mongo.not-created" and the payload:
       """
       error: 'Content cannot be blank'
       """
-    And the service contains no tweets
+    And the service contains no entries

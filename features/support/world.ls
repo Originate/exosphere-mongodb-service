@@ -5,16 +5,16 @@ require! {
 
 World = !->
 
-  # Fills in tweet ids in the placeholders of the template
-  @fill-in-tweet-ids = (template, done) ->
+  # Fills in entry ids in the placeholders of the template
+  @fill-in-entry-ids = (template, done) ->
     needed-ids = []
-    eco.render template, id_of: (tweet) -> needed-ids.push tweet
+    eco.render template, id_of: (entry) -> needed-ids.push entry
     return done template if needed-ids.length is 0
     @exocom
-      ..send-message service: 'tweets', name: 'tweets.get-details', payload: {content: needed-ids[0]}
+      ..send-message service: 'tweets', name: 'mongo.get-details', payload: {content: needed-ids[0]}
       ..wait-until-receive ~>
         id = @exocom.received-messages![0].payload.id
-        done eco.render(template, id_of: (tweet) -> id)
+        done eco.render(template, id_of: (entry) -> id)
 
 
   @remove-ids = (payload) ->

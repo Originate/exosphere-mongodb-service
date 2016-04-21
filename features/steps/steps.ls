@@ -31,10 +31,10 @@ module.exports = ->
           ..on 'online', -> done!
 
 
-  @Given /^the service contains the tweets:$/, (table, done) ->
-    tweets = [{[key.to-lower-case!, value] for key, value of record} for record in table.hashes!]
+  @Given /^the service contains the entries:$/, (table, done) ->
+    entries = [{[key.to-lower-case!, value] for key, value of record} for record in table.hashes!]
     @exocom
-      ..send-message service: 'tweets', name: 'tweets.create-many', payload: tweets
+      ..send-message service: 'entries', name: 'mongo.create-many', payload: entries
       ..wait-until-receive done
 
 
@@ -44,31 +44,31 @@ module.exports = ->
 
 
   @When /^sending the message "([^"]*)" with the payload:$/, (message, payload, done) ->
-    @fill-in-tweet-ids payload, (filled-payload) ~>
+    @fill-in-entry-ids payload, (filled-payload) ~>
       if filled-payload[0] is '['   # payload is an array
         eval livescript.compile "payload-json = #{filled-payload}", bare: true, header: no
       else                          # payload is a hash
         eval livescript.compile "payload-json = {\n#{filled-payload}\n}", bare: true, header: no
-      @exocom.send-message service: 'tweets', name: message, payload: payload-json
+      @exocom.send-message service: 'entries', name: message, payload: payload-json
       done!
 
 
 
-  @Then /^the service contains no tweets$/, (done) ->
+  @Then /^the service contains no entries/, (done) ->
     @exocom
-      ..send-message service: 'tweets', name: 'tweets.list', payload: { owner_id: '1' }
+      ..send-message service: 'tweets', name: 'mongo.list', payload: { owner_id: '1' }
       ..wait-until-receive ~>
         expect(@exocom.received-messages![0].payload.count).to.equal 0
         done!
 
 
-  @Then /^the service now contains the tweets:$/, (table, done) ->
+  @Then /^the service now contains the entries:$/, (table, done) ->
     @exocom
-      ..send-message service: 'tweets', name: 'tweets.list', payload: { owner_id: '1' }
+      ..send-message service: 'tweets', name: 'mongo.list', payload: { owner_id: '1' }
       ..wait-until-receive ~>
-        actual-tweets = @remove-ids @exocom.received-messages![0].payload.tweets
-        expected-tweets = [{[key.to-lower-case!, value] for key, value of tweet} for tweet in table.hashes!]
-        jsdiff-console actual-tweets, expected-tweets, done
+        actual-entries = @remove-ids @exocom.received-messages![0].payload.entries
+        expected-entries = [{[key.to-lower-case!, value] for key, value of entry} for entry in table.hashes!]
+        jsdiff-console actual-entries, expected-entries, done
 
 
   @Then /^the service replies with "([^"]*)" and the payload:$/, (message, payload, done) ->

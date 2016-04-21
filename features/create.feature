@@ -1,10 +1,10 @@
-Feature: Creating tweets
+Feature: Creating entries
 
   Rules:
-  - tweets must have a content
-  - when successful, the service replies with "tweets.created"
-    and the newly created account
-  - when there is an error, the service replies with "tweets.not-created"
+  - entries must have a content
+  - when successful, the service replies with "mongo.created"
+    and the newly created entry
+  - when there is an error, the service replies with "mongo.not-created"
     and a message describing the error
 
 
@@ -13,31 +13,31 @@ Feature: Creating tweets
     And an instance of this service
 
 
-  Scenario: creating a valid tweet
-    When sending the message "tweets.create" with the payload:
+  Scenario: creating a valid entry
+    When sending the message "mongo.create" with the payload:
       """
       owner_id: '1'
       content: 'Hello world'
       """
-    Then the service replies with "tweets.created" and the payload:
+    Then the service replies with "mongo.created" and the payload:
       """
       id: /\d+/
       owner_id: '1'
       content: 'Hello world'
       """
-    And the service now contains the tweets:
+    And the service now contains the entries:
       | CONTENT     | OWNER_ID |
       | Hello world | 1        |
 
 
-  Scenario: trying to create a tweet with empty content
-    When sending the message "tweets.create" with the payload:
+  Scenario: trying to create a entry with empty content
+    When sending the message "mongo.create" with the payload:
       """
       owner_id: '1'
       content: ''
       """
-    Then the service replies with "tweets.not-created" and the payload:
+    Then the service replies with "mongo.not-created" and the payload:
       """
       error: 'Content cannot be blank'
       """
-    And the service contains no tweets
+    And the service contains no entries
