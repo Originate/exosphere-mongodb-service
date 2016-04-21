@@ -8,13 +8,16 @@ startup:
 
 
 messages:
+
   namespace: mongo
+
   receives:
     - mongo.create
     - mongo.list
     - mongo.get-details
     - mongo.update
     - mongo.delete
+
   sends:
     - mongo.created
     - mongo.listed
