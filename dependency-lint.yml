@@ -3,29 +3,26 @@
 
 executedModules:
   npmScripts:
-    dev:
-      - lint
-      - publish
-      - test
-      - version
-  shellScripts:
     dev: []
+  shellScripts:
+    dev:
+      - 'bin/*'
     ignore: []
-    root: ''
+    root: 'bin/*'
 
 ignoreErrors:
   missing: []
   shouldBeDependency: []
   shouldBeDevDependency: []
   unused:
-    - cucumber
+    - cucumber-snippets-livescript
     - o-tools
 
 requiredModules:
   files:
     dev:
       - '{features,spec,test}/**/*'
-      - '**/*{.,_,-}{spec,test}.js'
+      - '**/*{.,_,-}{spec,test}.ls'
     ignore:
       - 'node_modules/**/*'
     root: '**/*.ls'
