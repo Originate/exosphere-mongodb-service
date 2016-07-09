@@ -9,6 +9,7 @@
 * install dependencies:
 
   ```
+  brew install zeromq
   npm install
   ```
 

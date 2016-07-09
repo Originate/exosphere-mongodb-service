@@ -19,14 +19,15 @@ module.exports = ->
     port-reservation
       ..get-port N (@exocom-port) ~>
         @exocom = new ExoComMock
-          ..listen @exocom-port, done
+          ..listen @exocom-port
+        done!
 
 
   @Given /^an instance of this service$/, (done) ->
     port-reservation
       ..get-port N (@service-port) ~>
         @exocom.register-service name: 'tweets', port: @service-port
-        @process = new ExoService service-name: 'tweets', exocom-port: @exocom.port, exorelay-port: @service-port
+        @process = new ExoService service-name: 'tweets', exocom-port: @exocom.pull-socket-port, exorelay-port: @service-port
           ..listen!
           ..on 'online', -> done!
 
@@ -34,13 +35,13 @@ module.exports = ->
   @Given /^the service contains the entries:$/, (table, done) ->
     entries = [{[key.to-lower-case!, value] for key, value of record} for record in table.hashes!]
     @exocom
-      ..send-message service: 'tweets', name: 'mongo.create-many', payload: entries
-      ..wait-until-receive done
+      ..send service: 'tweets', name: 'mongo.create-many', payload: entries
+      ..on-receive done
 
 
 
   @When /^sending the message "([^"]*)"$/, (message) ->
-    @exocom.send-message service: 'tweets', name: message
+    @exocom.send service: 'tweets', name: message
 
 
   @When /^sending the message "([^"]*)" with the payload:$/, (message, payload, done) ->
@@ -49,30 +50,30 @@ module.exports = ->
         eval livescript.compile "payload-json = #{filled-payload}", bare: true, header: no
       else                          # payload is a hash
         eval livescript.compile "payload-json = {\n#{filled-payload}\n}", bare: true, header: no
-      @exocom.send-message service: 'tweets', name: message, payload: payload-json
+      @exocom.send service: 'tweets', name: message, payload: payload-json
       done!
 
 
 
   @Then /^the service contains no entries/, (done) ->
     @exocom
-      ..send-message service: 'tweets', name: 'mongo.list', payload: { owner_id: '1' }
-      ..wait-until-receive ~>
-        expect(@exocom.received-messages![0].payload.count).to.equal 0
+      ..send service: 'tweets', name: 'mongo.list', payload: { owner_id: '1' }
+      ..on-receive ~>
+        expect(@exocom.received-messages[0].payload.count).to.equal 0
         done!
 
 
   @Then /^the service now contains the entries:$/, (table, done) ->
     @exocom
-      ..send-message service: 'tweets', name: 'mongo.list', payload: { owner_id: '1' }
-      ..wait-until-receive ~>
-        actual-entries = @remove-ids @exocom.received-messages![0].payload.entries
+      ..send service: 'tweets', name: 'mongo.list', payload: { owner_id: '1' }
+      ..on-receive ~>
+        actual-entries = @remove-ids @exocom.received-messages[0].payload.entries
         expected-entries = [{[key.to-lower-case!, value] for key, value of entry} for entry in table.hashes!]
         jsdiff-console actual-entries, expected-entries, done
 
 
   @Then /^the service replies with "([^"]*)" and the payload:$/, (message, payload, done) ->
     eval livescript.compile "expected-payload = {\n#{payload}\n}", bare: yes, header: no
-    @exocom.wait-until-receive ~>
-      actual-payload = @exocom.received-messages![0].payload
+    @exocom.on-receive ~>
+      actual-payload = @exocom.received-messages[0].payload
       jsdiff-console @remove-ids(actual-payload), @remove-ids(expected-payload), done
