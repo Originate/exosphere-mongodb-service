@@ -5,8 +5,10 @@ require! {
   'exoservice' : ExoService
   'jsdiff-console'
   'livescript'
+  'lowercase-keys'
   'nitroglycerin' : N
   'port-reservation'
+  'prelude-ls' : {map}
   'record-http' : HttpRecorder
   'request'
   'wait' : {wait-until}
@@ -33,7 +35,7 @@ module.exports = ->
 
 
   @Given /^the service contains the entries:$/, (table, done) ->
-    entries = [{[key.to-lower-case!, value] for key, value of record} for record in table.hashes!]
+    entries = table.hashes! |> map lowercase-keys
     @exocom
       ..send service: 'tweets', name: 'mongo.create-many', payload: entries
       ..on-receive done
