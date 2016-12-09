@@ -70,7 +70,7 @@ module.exports = ->
       ..send service: 'tweets', name: 'mongo.list', payload: { owner_id: '1' }
       ..on-receive ~>
         actual-entries = @remove-ids @exocom.received-messages[0].payload.entries
-        expected-entries = [{[key.to-lower-case!, value] for key, value of entry} for entry in table.hashes!]
+        expected-entries = table.hashes! |> map lowercase-keys
         jsdiff-console actual-entries, expected-entries, done
 
 
